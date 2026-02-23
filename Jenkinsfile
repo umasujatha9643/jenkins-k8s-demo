@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME  = 'jenkins-k8s-demo'
-        BUILD_TAG = "v${BUILD_NUMBER}"
+        APP_NAME     = 'jenkins-k8s-demo'
+        BUILD_TAG    = "v${BUILD_NUMBER}"
+        MINIKUBE_HOME = '/var/lib/jenkins'
     }
 
     stages {
@@ -26,6 +27,7 @@ pipeline {
             steps {
                 echo "Building image: ${APP_NAME}:${BUILD_TAG}"
                 sh """
+                    export MINIKUBE_HOME=/var/lib/jenkins
                     minikube image build -t ${APP_NAME}:${BUILD_TAG} .
                     minikube image tag ${APP_NAME}:${BUILD_TAG} ${APP_NAME}:latest
                 """
