@@ -23,15 +23,15 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {
-                echo "Building image: ${APP_NAME}:${BUILD_TAG}"
-                sh """
-                    eval \$(minikube docker-env)
-                    docker build -t ${APP_NAME}:${BUILD_TAG} .
-                    docker tag ${APP_NAME}:${BUILD_TAG} ${APP_NAME}:latest
-                """
-            }
-        }
+    steps {
+        echo "Building image: ${APP_NAME}:${BUILD_TAG}"
+        sh """
+            # Use minikube's docker directly
+            minikube image build -t ${APP_NAME}:${BUILD_TAG} .
+            minikube image tag ${APP_NAME}:${BUILD_TAG} ${APP_NAME}:latest
+        """
+    }
+}
 
         stage('Deploy to Minikube') {
             steps {
