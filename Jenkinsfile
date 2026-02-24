@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME     = 'jenkins-k8s-demo'
-        BUILD_TAG    = "v${BUILD_NUMBER}"
+        APP_NAME      = 'jenkins-k8s-demo'
+        BUILD_TAG     = "v${BUILD_NUMBER}"
         MINIKUBE_HOME = '/var/lib/jenkins'
     }
 
@@ -63,11 +63,11 @@ pipeline {
     }
 
     post {
-    success {
-        echo "App URL: http://172.22.117.176:9090"
-        sh "kubectl port-forward service/jenkins-k8s-demo-service 9090:80 --address=0.0.0.0 &"
-    }
-}
+        success {
+            echo "Build #${BUILD_NUMBER} deployed to Minikube successfully!"
+            echo "App URL: http://172.22.117.176:9090"
+            sh "kubectl port-forward service/jenkins-k8s-demo-service 9090:80 --address=0.0.0.0 &"
+        }
         failure {
             echo "Failed! Rolling back..."
             sh "kubectl rollout undo deployment/${APP_NAME} || true"
